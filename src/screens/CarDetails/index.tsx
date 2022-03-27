@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { BackButton } from '../../components/BackButton';
-import { ImageSlider } from '../../components/ImageSlider';
+import { ImageSlider } from '../../components/ImageSlider'
 import { Accessory } from '../../components/Accessory';
 import { Button } from '../../components/Button';
 

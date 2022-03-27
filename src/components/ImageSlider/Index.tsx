@@ -28,5 +28,5 @@ export function ImageSlider({ imagesUrl }: Props) {
                 />
             </CarImageWrapper>
         </Container>
-    )
+    );
 }
