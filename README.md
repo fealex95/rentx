@@ -6,7 +6,8 @@ A idéia da criação do aplicativo foi para uma locadora de carros. Desenvolven
 
 Pontos aprendidos com projeto:
 
-- Cohsumir APi
+- Consumir APi
+
 ... em Desenvolvimento
 ## Tecnologias Utilizadas
 
