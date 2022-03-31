@@ -17,7 +17,8 @@ import theme from './src/styles/theme';
 import { Home } from './src/screens/Home';
 import { CarDetails } from './src/screens/CarDetails';
 import { Scheduling } from './src/screens/Scheduling';
-import { SchudelingDetails } from './src/screens/SchudelingDetails'
+import { SchudelingDetails } from './src/screens/SchudelingDetails';
+import { SchudelingComplete } from './src/screens/SchudelingComplete';
 
 export default function App() {
 
@@ -35,7 +36,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <SchudelingDetails />
+      <SchudelingComplete />
     </ThemeProvider>
   );
 }

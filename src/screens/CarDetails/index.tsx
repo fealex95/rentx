@@ -37,7 +37,7 @@ export function CarDetails() {
             </Header>
 
             <CarImages>
-                <ImageSlider imagesUrl={['https://img3.gratispng.com/dy/1d4da894bba7bada801706c76d73dba2/L0KzQYm3U8MyN6J7j5H0aYP2gLBuTfF2bJoyiuU2Nj3khbXwTgJ0Pl5mjdZyLXG5PbTokr1ifZVuRadqYna2c7XqhMJkbZM2RqkBNES1RYG9UcUzOmU9SqUENki5Q4a1kP5o/kisspng-audi-rs-6-audi-rs6-audi-a6-car-audi-5abf3cdcd2ceb1.7644250615224823968635.png']} />
+                <ImageSlider imagesUrl={['https://img3.gratispng.com/dy/8e3102871c4936914a291ffa7367727d/L0KzQYm3UsA1N5htfZH0aYP2gLBuTfF2bJoyiAJ4coTlcbTyTfNwdpRqiOY2Y3H1PbXsgfxmeqRtgeI2YYXneX7oV71ifZVuRadqN0e6Q4m5VsY0OpI5RqI7NUazQ4O5UcUyP2g8T6kENES0SIe1kP5o/kisspng-audi-sportback-concept-car-dealership-audi-a7-audi-5a7773826632a4.0256032215177777944186.png']} />
             </CarImages>
 
             <Content>
