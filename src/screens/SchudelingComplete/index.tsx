@@ -1,5 +1,6 @@
 import React from 'react';
-import { useWindowDimensions } from 'react-native'
+import { useWindowDimensions, StatusBar } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import LogoSvg from '../../assets/logo_background_gray.svg';
 import DoneSvg from '../../assets/done.svg';
@@ -11,15 +12,22 @@ import {
     Message,
     Footer
 } from './styles';
-import { ComfirmButton } from '../../components/ConfirmButton';
+import { ConfirmButton } from '../../components/ConfirmButton';
 
 
 export function SchudelingComplete() {
+
+    const navigation = useNavigation();
+
+    function handleConfirm() {
+        navigation.navigate("Home" as never);
+    }
 
     const { width } = useWindowDimensions();
 
     return (
         <Container>
+            <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
             <LogoSvg width={width} />
 
             <Content>
@@ -34,7 +42,7 @@ export function SchudelingComplete() {
                 </Message>
             </Content>
             <Footer>
-                <ComfirmButton title='OK' />
+                <ConfirmButton title='OK' onPress={handleConfirm} />
             </Footer>
         </Container>
     )
