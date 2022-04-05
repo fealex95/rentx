@@ -1,6 +1,7 @@
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from 'styled-components';
+import { generateInterval } from './generateInterval'
 
 import { Calendar as CustomCalendar, LocaleConfig, CalendarProps } from 'react-native-calendars';
 
@@ -20,8 +21,16 @@ interface MarkedDateProps {
     }
 }
 
+interface DayProps {
+    dateString: string;
+    day: number;
+    month: number;
+    year: number;
+    timestamp: number;
+}
 
-export function Calendar({ markedDates, onDayPress }: CalendarProps) {
+
+function Calendar({ markedDates, onDayPress }: CalendarProps) {
 
     const theme = useTheme();
 
@@ -68,4 +77,11 @@ export function Calendar({ markedDates, onDayPress }: CalendarProps) {
         />
 
     )
+}
+
+export {
+    Calendar,
+    MarkedDateProps,
+    DayProps,
+    generateInterval
 }
