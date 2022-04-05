@@ -56,7 +56,7 @@ export function Scheduling() {
             </Header>
 
             <Content>
-                <Calendar />
+                <Calendar markedDates={ } onDayPress={/>
             </Content>
 
             <Footer>
