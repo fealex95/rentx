@@ -34,10 +34,10 @@ export function CarDetails() {
 
     const navigation = useNavigation();
     const route = useRoute();
-    const { car } = route.params as Params;
+    const { car, dates } = route.params as Params;
 
     function handleConfirmRental() {
-        navigation.navigate("Scheduling" as never);
+        navigation.navigate("Scheduling", { car });
     }
 
     return (

@@ -2,7 +2,8 @@ import React from 'react';
 import { Feather } from '@expo/vector-icons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useTheme } from 'styled-components';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { format } from 'date-fns';
 
 import { BackButton } from '../../components/BackButton';
 import { ImageSlider } from '../../components/ImageSlider'
@@ -41,8 +42,14 @@ import {
     RentalPriceTotal,
     Footer
 } from './styles';
+import { CarDTO } from '../../dtos/CarDTO';
+import { getPlatformDate } from '../../utils/getPlatformDate';
 
 
+interface Params {
+    car: CarDTO;
+    dates: [string];
+}
 
 export function SchudelingDetails() {
 
@@ -54,6 +61,10 @@ export function SchudelingDetails() {
 
     const theme = useTheme();
 
+    const route = useRoute();
+    const { car, dates } = route.params as Params;
+
+
     return (
         <Container>
             <Header>
@@ -61,14 +72,14 @@ export function SchudelingDetails() {
             </Header>
 
             <CarImages>
-                <ImageSlider imagesUrl={['https://img3.gratispng.com/dy/8e3102871c4936914a291ffa7367727d/L0KzQYm3UsA1N5htfZH0aYP2gLBuTfF2bJoyiAJ4coTlcbTyTfNwdpRqiOY2Y3H1PbXsgfxmeqRtgeI2YYXneX7oV71ifZVuRadqN0e6Q4m5VsY0OpI5RqI7NUazQ4O5UcUyP2g8T6kENES0SIe1kP5o/kisspng-audi-sportback-concept-car-dealership-audi-a7-audi-5a7773826632a4.0256032215177777944186.png']} />
+                <ImageSlider imagesUrl={car.photos} />
             </CarImages>
 
             <Content>
                 <Details>
                     <Description>
-                        <Brand>Lamborghini</Brand>
-                        <Name>Huracan</Name>
+                        <Brand>{car.brand}</Brand>
+                        <Name>{car.name}</Name>
                     </Description>
                     <Rent>
                         <Period>Ao dia</Period>
@@ -91,14 +102,14 @@ export function SchudelingDetails() {
 
                     <DateInfo>
                         <DateTitle>DE</DateTitle>
-                        <DateValue>28/03/2022</DateValue>
+                        <DateValue>{format(getPlatformDate(new Date(dates[0])), 'dd/MM/yyyy')}</DateValue>
                     </DateInfo>
 
                     <Feather name="chevron-right" size={RFValue(10)} color={theme.colors.text_details} />
 
                     <DateInfo>
                         <DateTitle>ATÉ</DateTitle>
-                        <DateValue>28/03/2022</DateValue>
+                        <DateValue>{format(getPlatformDate(new Date(dates[dates.length - 1])), 'dd/MM/yyyy')}</DateValue>
                     </DateInfo>
 
                 </RentalPeriod>
