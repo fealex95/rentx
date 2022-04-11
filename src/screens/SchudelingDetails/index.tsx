@@ -1,21 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Feather } from '@expo/vector-icons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useTheme } from 'styled-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { format } from 'date-fns';
+import { ActivityIndicator } from 'react-native';
 
 import { BackButton } from '../../components/BackButton';
 import { ImageSlider } from '../../components/ImageSlider'
 import { Accessory } from '../../components/Accessory';
 import { Button } from '../../components/Button';
 
-import speedSvg from '../../assets/speed.svg';
-import accelerationSvg from '../../assets/acceleration.svg';
-import forceSvg from '../../assets/force.svg';
-import gasolineSvg from '../../assets/gasoline.svg';
-import exchangeSvg from '../../assets/exchange.svg';
-import peopleSvg from '../../assets/people.svg';
+import { CarDTO } from '../../dtos/CarDTO';
+import { getPlatformDate } from '../../utils/getPlatformDate';
+import api from '../../services/api';
 
 import {
     Container,
@@ -42,8 +40,10 @@ import {
     RentalPriceTotal,
     Footer
 } from './styles';
-import { CarDTO } from '../../dtos/CarDTO';
-import { getPlatformDate } from '../../utils/getPlatformDate';
+import { getAccessoryIcon } from '../../utils/getAccessoryIcon';
+import { Alert } from 'react-native';
+
+
 
 
 interface Params {
@@ -52,17 +52,42 @@ interface Params {
 }
 
 export function SchudelingDetails() {
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigation = useNavigation();
-
-    function handleConfirmRental() {
-        navigation.navigate("SchudelingComplete" as never);
-    }
 
     const theme = useTheme();
 
     const route = useRoute();
+
     const { car, dates } = route.params as Params;
+
+    async function handleConfirmRental() {
+        setIsLoading(true);
+        const schedulesByCar = await api.get(`schedules_bycars/${car.id}`);
+
+        const unavailable_dates = [
+            ...schedulesByCar.data.unavailable_dates,
+            ...dates
+        ];
+
+        api.post(`schedules_byuser`, {
+            user_id: 2,
+            car,
+        })
+
+        api.put(`schedules_bycars/${car.id}`, {
+            id: car.id,
+            unavailable_dates
+        }).then(() => navigation.navigate("SchudelingComplete" as never))
+            .catch(() => Alert.alert('Não foi possível agendar, favor tente novamente!'))
+
+
+    }
+
+    function calcRent(dates: [string]) {
+        return dates.length * car.rent.price;
+    }
 
 
     return (
@@ -82,17 +107,17 @@ export function SchudelingDetails() {
                         <Name>{car.name}</Name>
                     </Description>
                     <Rent>
-                        <Period>Ao dia</Period>
-                        <Price>R$ 580</Price>
+                        <Period>{car.rent.period}</Period>
+                        <Price>R$ {car.rent.price}</Price>
                     </Rent>
                 </Details>
                 <Accessories>
-                    <Accessory name='380KM/h' icon={speedSvg} />
-                    <Accessory name='3.2s' icon={accelerationSvg} />
-                    <Accessory name='800 HP' icon={forceSvg} />
-                    <Accessory name='Gasolina' icon={gasolineSvg} />
-                    <Accessory name='Auto' icon={exchangeSvg} />
-                    <Accessory name='2 pessoas' icon={peopleSvg} />
+                    {
+                        car.accessories.map(accessory => (
+                            <Accessory key={accessory.type} name={accessory.name} icon={getAccessoryIcon(accessory.type)} />
+                        ))
+                    }
+
                 </Accessories>
 
                 <RentalPeriod>
@@ -117,14 +142,18 @@ export function SchudelingDetails() {
                 <RentalPrice>
                     <RentalPriceLabel>TOTAL</RentalPriceLabel>
                     <RentalPriceDetails>
-                        <RentalPriceQuota>R$ 580 x3 diárias</RentalPriceQuota>
-                        <RentalPriceTotal>R$ 2.900</RentalPriceTotal>
+                        <RentalPriceQuota>{`R$ ${car.rent.price} x${dates.length} diárias`}</RentalPriceQuota>
+                        <RentalPriceTotal>R$ {calcRent(dates)}</RentalPriceTotal>
                     </RentalPriceDetails>
                 </RentalPrice>
             </Content>
 
-            <Footer>
-                <Button title='Alugar agora' color={theme.colors.success} onPress={handleConfirmRental} />
+            <Footer>{
+                isLoading ? <ActivityIndicator size={24} color={theme.colors.success} /> : (
+                    <Button title='Alugar agora' color={theme.colors.success} onPress={handleConfirmRental} />
+                )
+            }
+
             </Footer>
 
 
