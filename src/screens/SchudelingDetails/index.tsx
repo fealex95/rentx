@@ -4,7 +4,6 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { useTheme } from 'styled-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { format } from 'date-fns';
-import { ActivityIndicator } from 'react-native';
 
 import { BackButton } from '../../components/BackButton';
 import { ImageSlider } from '../../components/ImageSlider'
@@ -150,12 +149,8 @@ export function SchudelingDetails() {
                 </RentalPrice>
             </Content>
 
-            <Footer>{
-                isLoading ? <ActivityIndicator size={24} color={theme.colors.success} /> : (
-                    <Button title='Alugar agora' color={theme.colors.success} onPress={handleConfirmRental} />
-                )
-            }
-
+            <Footer>
+                <Button title='Alugar agora' color={theme.colors.success} onPress={handleConfirmRental} loading={isLoading} />
             </Footer>
 
 
