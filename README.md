@@ -59,7 +59,11 @@ Abra outro terminal e execute o comando
 
 
 ## Screenshots
-
-<div style="flex-direction: row;">
-Em desenvolvimento ainda...
+<div style="flex-direction: row;"> 
+    <img src="https://github.com/fealex95/rentx/blob/master/screenshots/WhatsApp%20Image%202022-04-21%20at%2012.02.00%20(1).jpeg" width=190 /> 
+    <img src="https://github.com/fealex95/rentx/blob/master/screenshots/WhatsApp%20Image%202022-04-21%20at%2012.02.01.jpeg" width=190 /> 
+    <img src="https://github.com/fealex95/rentx/blob/master/screenshots/WhatsApp%20Image%202022-04-21%20at%2012.01.59%20(3).jpeg" width=190 /> 
+    <img src="https://github.com/fealex95/rentx/blob/master/screenshots/WhatsApp%20Image%202022-04-21%20at%2012.02.00.jpeg" width=190 />  
+    <img src="https://github.com/fealex95/rentx/blob/master/screenshots/WhatsApp%20Image%202022-04-21%20at%2012.01.59%20(1).jpeg" width=190 />   
+    <img src="https://github.com/fealex95/rentx/blob/master/screenshots/WhatsApp%20Image%202022-04-21%20at%2012.01.58.jpeg" width=190 />     
 </div>
