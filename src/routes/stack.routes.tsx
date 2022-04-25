@@ -8,14 +8,16 @@ import { Scheduling } from '../screens/Scheduling';
 import { SchudelingDetails } from '../screens/SchudelingDetails';
 import { SchudelingComplete } from '../screens/SchudelingComplete';
 import { MyCars } from '../screens/MyCars';
-import { Splash } from '../screens/Splash'
+import { Splash } from '../screens/Splash';
+import { SingIn } from '../screens/SignIn';
 
 const { Navigator, Screen } = createStackNavigator();
 
 export function StackRoutes() {
     return (
-        <Navigator screenOptions={{ headerShown: false }} initialRouteName="Splash">
+        <Navigator screenOptions={{ headerShown: false }} initialRouteName="SignIn">
             <Screen name='Splash' component={Splash} />
+            <Screen name='SignIn' component={SingIn} />
             <Screen name='Home' component={Home} options={{ gestureEnabled: false }} />
             <Screen name='CarDetails' component={CarDetails} />
             <Screen name='Scheduling' component={Scheduling} />
