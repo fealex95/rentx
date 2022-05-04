@@ -10,14 +10,17 @@ import { SchudelingComplete } from '../screens/SchudelingComplete';
 import { MyCars } from '../screens/MyCars';
 import { Splash } from '../screens/Splash';
 import { SingIn } from '../screens/SignIn';
+import { SignupFirstStep } from '../screens/Signup/SignupFirstStep';
 
 const { Navigator, Screen } = createStackNavigator();
 
 export function StackRoutes() {
     return (
         <Navigator screenOptions={{ headerShown: false }} initialRouteName="SignIn">
+
             <Screen name='Splash' component={Splash} />
             <Screen name='SignIn' component={SingIn} />
+            <Screen name='SignupFirstStep' component={SignupFirstStep} />
             <Screen name='Home' component={Home} options={{ gestureEnabled: false }} />
             <Screen name='CarDetails' component={CarDetails} />
             <Screen name='Scheduling' component={Scheduling} />
