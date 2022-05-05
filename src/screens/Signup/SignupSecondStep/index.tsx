@@ -1,6 +1,6 @@
 import React from 'react';
 import { KeyboardAvoidingView, Keyboard } from 'react-native';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 
 import { BackButton } from '../../../components/BackButton';
@@ -16,14 +16,12 @@ import {
     Form,
     FormTitle
 } from './styles';
+import { PasswordInput } from '../../../components/PasswordInput';
+import theme from '../../../styles/theme';
 
 
-export function SignupFirstStep() {
+export function SignupSecondStep() {
     const navigation = useNavigation();
-
-    function handleNextStep() {
-        navigation.navigate('SignupSecondStep');
-    }
 
     function handleBack() {
         navigation.navigate('SignIn' as never);
@@ -49,13 +47,12 @@ export function SignupFirstStep() {
                     </SubTitle>
 
                     <Form>
-                        <FormTitle>1. Dados</FormTitle>
-                        <Input iconName='user' placeholder='Nome' />
-                        <Input iconName='mail' placeholder='Email' keyboardType='email-address' />
-                        <Input iconName='credit-card' placeholder='CNH' keyboardType='numeric' />
+                        <FormTitle>2. Senha</FormTitle>
+                        <PasswordInput iconName='lock' placeholder='Senha' />
+                        <PasswordInput iconName='lock' placeholder='Repetir senha' />
                     </Form>
 
-                    <Button title='Próximo' onPress={handleNextStep} enabled />
+                    <Button title='Cadastrar' onPress={() => { }} color={theme.colors.success} />
                 </Container>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
