@@ -4,6 +4,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import * as Yup from 'yup';
 import { useTheme } from 'styled-components';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../../hooks/auth';
 
 import {
     Container,
@@ -23,6 +24,7 @@ export function SingIn() {
     const [password, setPassword] = useState('');
     const theme = useTheme();
     const navigation = useNavigation();
+    const { signIn } = useAuth();
 
     async function handleSignIn() {
         try {
@@ -36,7 +38,7 @@ export function SingIn() {
             await schema.validate({ email, password });
             Alert.alert("Tudo certo!");
 
-            //fazer login
+            signIn({ email, password });
         } catch (error) {
             if (error instanceof Yup.ValidationError) {
                 Alert.alert('Opa', error.message)

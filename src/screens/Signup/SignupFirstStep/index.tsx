@@ -1,7 +1,8 @@
-import React from 'react';
-import { KeyboardAvoidingView, Keyboard } from 'react-native';
+import React, { useState } from 'react';
+import { KeyboardAvoidingView, Keyboard, Alert } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native';
+import * as Yup from 'yup';
 
 import { BackButton } from '../../../components/BackButton';
 import { Bullet } from '../../../components/Bullet';
@@ -19,10 +20,34 @@ import {
 
 
 export function SignupFirstStep() {
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [driverLicense, setDriverLicense] = useState('');
     const navigation = useNavigation();
 
-    function handleNextStep() {
-        navigation.navigate('SignupSecondStep');
+    async function handleNextStep() {
+        try {
+            const schema = Yup.object().shape({
+                name: Yup.string().required('Nome é obrigátório'),
+                email: Yup.string().email('E-mail inválido').required('E-mail é obrigatório'),
+                driverLicense: Yup.string().required('CNH é obrigatória')
+            });
+
+            const data = {
+                name,
+                email,
+                driverLicense
+            }
+
+            await schema.validate(data);
+
+            navigation.navigate('SignupSecondStep' as never, { user: data } as never);
+        } catch (error) {
+            if (error instanceof Yup.ValidationError) {
+                return Alert.alert('Opa', error.message);
+            }
+        }
+
     }
 
     function handleBack() {
@@ -50,9 +75,25 @@ export function SignupFirstStep() {
 
                     <Form>
                         <FormTitle>1. Dados</FormTitle>
-                        <Input iconName='user' placeholder='Nome' />
-                        <Input iconName='mail' placeholder='Email' keyboardType='email-address' />
-                        <Input iconName='credit-card' placeholder='CNH' keyboardType='numeric' />
+                        <Input
+                            iconName='user'
+                            placeholder='Nome'
+                            onChangeText={setName}
+                            value={name}
+                        />
+                        <Input
+                            iconName='mail'
+                            placeholder='Email'
+                            keyboardType='email-address'
+                            onChangeText={setEmail}
+                            value={email} />
+                        <Input
+                            iconName='credit-card'
+                            placeholder='CNH'
+                            keyboardType='numeric'
+                            onChangeText={setDriverLicense}
+                            value={driverLicense}
+                        />
                     </Form>
 
                     <Button title='Próximo' onPress={handleNextStep} enabled />
