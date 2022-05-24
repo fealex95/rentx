@@ -19,10 +19,12 @@ import {
 } from './styles';
 
 
+
 export function SignupFirstStep() {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [driverLicense, setDriverLicense] = useState('');
+
     const navigation = useNavigation();
 
     async function handleNextStep() {

@@ -71,7 +71,7 @@ export function CarDetails() {
     })
 
     function handleConfirmRental() {
-        navigation.navigate("Scheduling", { car });
+        navigation.navigate("Scheduling" as never, { car } as never);
     }
 
     function handleBack() {
@@ -115,8 +115,8 @@ export function CarDetails() {
                         <Name>{car.name}</Name>
                     </Description>
                     <Rent>
-                        <Period>{car.rent.period}</Period>
-                        <Price>R$ {car.rent.price}</Price>
+                        <Period>{car.period}</Period>
+                        <Price>R$ {car.price}</Price>
                     </Rent>
                 </Details>
                 <Accessories>
