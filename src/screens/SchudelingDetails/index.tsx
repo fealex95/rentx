@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Feather } from '@expo/vector-icons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useTheme } from 'styled-components';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { format } from 'date-fns';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 import { BackButton } from '../../components/BackButton';
 import { ImageSlider } from '../../components/ImageSlider'
@@ -52,6 +53,7 @@ interface Params {
 
 export function SchudelingDetails() {
     const [isLoading, setIsLoading] = useState(false);
+    const [carUpdated, setCarUpdated] = useState<CarDTO>({} as CarDTO);
 
     const navigation = useNavigation();
 
@@ -59,40 +61,43 @@ export function SchudelingDetails() {
 
     const route = useRoute();
 
+    const netInfo = useNetInfo();
+
     const { car, dates } = route.params as Params;
+
+    const rentTotal = Number(dates.length * car.price);
 
     async function handleConfirmRental() {
         setIsLoading(true);
-        const schedulesByCar = await api.get(`schedules_bycars/${car.id}`);
 
-        const unavailable_dates = [
-            ...schedulesByCar.data.unavailable_dates,
-            ...dates
-        ];
-
-        api.post(`schedules_byuser`, {
-            user_id: 2,
-            car,
-            startDate: format(getPlatformDate(new Date(dates[0])), 'dd/MM/yyyy'),
-            endDate: format(getPlatformDate(new Date(dates[dates.length - 1])), 'dd/MM/yyyy'),
-        })
-
-        api.put(`schedules_bycars/${car.id}`, {
-            id: car.id,
-            unavailable_dates
+        await api.post('rentals', {
+            user_id: 1,
+            car_id: car.id,
+            start_date: new Date(dates[0]),
+            end_date: new Date(dates[dates.length - 1]),
+            total: rentTotal
         }).then(() => navigation.navigate("Confirmation" as never, {
             nextScreenRoute: 'Home',
             title: 'Carro alugado!',
             message: `Agora você precisa ir \n até a concessionária da RENTX\npegar o seu automóvel.`
         } as never))
-            .catch(() => Alert.alert('Não foi possível agendar, favor tente novamente!'))
-
-
+            .catch(() => Alert.alert('Não foi possível agendar, favor tente novamente!'));
     }
 
-    function calcRent(dates: [string]) {
-        return dates.length * car.rent.price;
+    function calcRent(dates: [string]): number {
+        return dates.length * car.price;
     }
+
+    useEffect(() => {
+        async function fetchCarUpdated() {
+            const response = await api.get(`cars/${car.id}`);
+            setCarUpdated(response.data);
+        }
+
+        if (netInfo.isConnected === true) {
+            fetchCarUpdated();
+        }
+    }, [netInfo.isConnected]);
 
 
     return (
@@ -102,7 +107,7 @@ export function SchudelingDetails() {
             </Header>
 
             <CarImages>
-                <ImageSlider imagesUrl={car.photos} />
+                <ImageSlider imagesUrl={!!carUpdated.photos ? carUpdated.photos : [{ id: car.thumbnail, photo: car.thumbnail }]} />
             </CarImages>
 
             <Content>
@@ -112,18 +117,25 @@ export function SchudelingDetails() {
                         <Name>{car.name}</Name>
                     </Description>
                     <Rent>
-                        <Period>{car.rent.period}</Period>
-                        <Price>R$ {car.rent.price}</Price>
+                        <Period>{car.period}</Period>
+                        <Price>R$ {car.price}</Price>
                     </Rent>
                 </Details>
-                <Accessories>
-                    {
-                        car.accessories.map(accessory => (
-                            <Accessory key={accessory.type} name={accessory.name} icon={getAccessoryIcon(accessory.type)} />
-                        ))
-                    }
+                {
+                    carUpdated.accessories &&
+                    <Accessories>
+                        {
+                            carUpdated.accessories.map(
+                                accessory => (
+                                    <Accessory key={accessory.type} name={accessory.name} icon={getAccessoryIcon(accessory.type)} />
+                                )
+                            )
 
-                </Accessories>
+                        }
+
+
+                    </Accessories>
+                }
 
                 <RentalPeriod>
                     <CalendarIcon>
@@ -147,7 +159,7 @@ export function SchudelingDetails() {
                 <RentalPrice>
                     <RentalPriceLabel>TOTAL</RentalPriceLabel>
                     <RentalPriceDetails>
-                        <RentalPriceQuota>{`R$ ${car.rent.price} x${dates.length} diárias`}</RentalPriceQuota>
+                        <RentalPriceQuota>{`R$ ${car.price} x${dates.length} diárias`}</RentalPriceQuota>
                         <RentalPriceTotal>R$ {calcRent(dates)}</RentalPriceTotal>
                     </RentalPriceDetails>
                 </RentalPrice>

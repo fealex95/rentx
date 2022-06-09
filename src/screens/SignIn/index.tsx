@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBar, KeyboardAvoidingView, Keyboard, Alert } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import * as Yup from 'yup';
 import { useTheme } from 'styled-components';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../hooks/auth';
+import { database } from '../../database'
 
 import {
     Container,
@@ -36,7 +37,6 @@ export function SingIn() {
             })
 
             await schema.validate({ email, password });
-            Alert.alert("Tudo certo!");
 
             signIn({ email, password });
         } catch (error) {

@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNetInfo } from '@react-native-community/netinfo';
+
 import {
     Container,
     Details,
@@ -15,17 +17,18 @@ import {
 
 import { TouchableOpacityProps } from 'react-native';
 
-import { CarDTO } from '../../dtos/CarDTO';
+import { Car as ModelCar } from '../../database/models/Car';
 import { getAccessoryIcon } from '../../utils/getAccessoryIcon';
 
 
 
 interface Props extends TouchableOpacityProps {
-    data: CarDTO;
+    data: ModelCar;
 }
 
 export function Car({ data, ...rest }: Props) {
     const MotorIcon = getAccessoryIcon(data.fuel_type);
+    const netInfo = useNetInfo();
     return (
         <Container {...rest}>
             <Details>
@@ -35,7 +38,7 @@ export function Car({ data, ...rest }: Props) {
                 <About>
                     <Rent>
                         <Period>{data.period}</Period>
-                        <Price>R$ {data.price}</Price>
+                        <Price>R$ {netInfo.isConnected === true ? data.price : '...'}</Price>
                     </Rent>
                     <Type>
                         <MotorIcon />

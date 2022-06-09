@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar, StyleSheet } from 'react-native';
-import { RectButton } from 'react-native-gesture-handler';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
-
-import { useTheme } from 'styled-components';
-import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-    useAnimatedGestureHandler,
-    withSpring
-} from 'react-native-reanimated';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { synchronize } from '@nozbe/watermelondb/sync';
+import { database } from '../../database';
+import api from '../../services/api';
+import { Car as ModelCar } from '../../database/models/Car';
 
 import {
     Container,
@@ -24,33 +20,66 @@ import {
 import Logo from '../../assets/logo.svg';
 import { Car } from '../../components/Car';
 import { LoadAnimation } from '../../components/LoadAnimation';
-import { CarDTO } from '../../dtos/CarDTO';
-import api from '../../services/api';
-
-
 
 export function Home() {
     const navigation = useNavigation();
-    const [cars, setCars] = useState<CarDTO[]>([]);
+    const [cars, setCars] = useState<ModelCar[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const netInfo = useNetInfo();
+
     useEffect(() => {
+        let isMounted = true;
+
         async function getData() {
             try {
-                const response = await api.get('cars');
-                setCars(response.data);
+                const carCollection = database.get<ModelCar>('cars');
+                const cars = await carCollection.query().fetch();
+
+                if (isMounted) {
+                    setCars(cars)
+                }
             } catch (error) {
                 console.log(error);
             } finally {
-                setLoading(false);
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         }
 
         getData();
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
-    function handleCarDetails(car: CarDTO) {
+    useEffect(() => {
+        if (netInfo.isConnected === true) {
+            offlineSynchronize();
+        }
+    }, [netInfo.isConnected]);
+
+    function handleCarDetails(car: ModelCar) {
         navigation.navigate("CarDetails" as never, { car } as never);
+    }
+
+    async function offlineSynchronize() {
+        await synchronize({
+            database,
+            pullChanges: async ({ lastPulledAt }) => {
+                const response = await api.get(`cars/sync/pull?lastPulledVersion=${lastPulledAt || 0}`);
+                const { changes, latestVersion } = response.data;
+                console.log("### Sincronização ###");
+                console.log(changes);
+                return { changes, timestamp: latestVersion }
+            },
+            pushChanges: async ({ changes }) => {
+                const user = changes.users;
+
+                await api.post('users/sync/', user).catch(console.log);
+            }
+        });
     }
 
     return (
@@ -67,6 +96,7 @@ export function Home() {
                     }
                 </HeaderContent>
             </Header>
+
             {
                 loading ? <LoadAnimation /> :
                     <CarList
