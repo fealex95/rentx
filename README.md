@@ -7,6 +7,7 @@ A idéia da criação do aplicativo foi para uma locadora de carros. Desenvolven
 Pontos aprendidos com projeto:
 
 - Consumir API com Axios
+- Banco de dados com WatermelonDB
 - Utilizar React Native Animated
 - Criação de calendarios com função de periodo
 - Lidar com gestos do usuário
